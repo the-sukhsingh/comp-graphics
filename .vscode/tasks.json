@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "Build and Run C++",
+      "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -g3 -I C:\\msys64\\ucrt64\\include \"${file}\" -o \"${fileDirname}\\output\\${fileBasenameNoExtension}.exe\" -lbgi -lgdi32 -lcomdlg32 -luuid -loleaut32 -lole32 ; \"${fileDirname}\\output\\${fileBasenameNoExtension}.exe\"",
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
