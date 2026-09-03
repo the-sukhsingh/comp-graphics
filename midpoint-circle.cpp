@@ -84,6 +84,38 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
     outtextxy(originX + 5, originY + 5, "0");
 }
 
+void midpointCircle(int centerX, int centerY, int radius, int color, int originX, int originY, int zoom)
+{
+    int x = 0;
+    int y = radius;
+    int p = 1 - radius;
+
+    while (x <= y)
+    {
+        // Draw the eight octants
+        pixel(centerX + x, centerY + y, color, originX, originY, zoom);
+        pixel(centerX + y, centerY + x, color, originX, originY, zoom);
+        pixel(centerX - y, centerY + x, color, originX, originY, zoom);
+        pixel(centerX - x, centerY + y, color, originX, originY, zoom);
+        pixel(centerX - x, centerY - y, color, originX, originY, zoom);
+        pixel(centerX - y, centerY - x, color, originX, originY, zoom);
+        pixel(centerX + y, centerY - x, color, originX, originY, zoom);
+        pixel(centerX + x, centerY - y, color, originX, originY, zoom);
+
+        x++;
+
+        if (p <= 0)
+        {
+            p = p + 2 * x + 1;
+        }
+        else
+        {
+            y--;
+            p = p + 2 * x - 2 * y + 1;
+        }
+    }
+}
+
 int main()
 {
     int gd = DETECT, gm;
@@ -95,17 +127,14 @@ int main()
     cleardevice();
 
     // Coordinate system settings
-    int originX = 100;
-    int originY = 500;
+    int originX = 400;
+    int originY = 300;
     int zoom = 25;
 
     drawCoordinateSystem(originX, originY, zoom);
 
-    // Draw a straight line from (0, 0) to (10, 10)
-    for (int i = 0; i <= 10; ++i)
-    {
-        pixel(i, i, WHITE, originX, originY, zoom);
-    }
+    // Draw a Circle at (0,0) of radius 10
+    midpointCircle(0, 0, 10, RED, originX, originY, zoom);
     
 
     getch();

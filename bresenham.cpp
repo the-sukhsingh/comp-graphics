@@ -7,6 +7,7 @@ void pixel(int x, int y, int color, int originX, int originY, int zoom)
     int screenX = originX + x * zoom;
     int screenY = originY - y * zoom;
     setfillstyle(SOLID_FILL, color);
+    // draw a filled rectangle to represent the pixel in color
     bar(
         screenX - zoom/2,
         screenY - zoom/2,
@@ -84,6 +85,42 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
     outtextxy(originX + 5, originY + 5, "0");
 }
 
+void bresenhamLine(int x1, int y1, int x2, int y2, int color, int originX, int originY, int zoom){
+    float x = x1;
+    float y = y1;
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    float p;
+    if (abs(dx) > abs(dy)){
+        p = 2 * abs(dy) - abs(dx);
+        while (x <= x2){
+            pixel(x, y, color, originX, originY, zoom);
+            x += 1;
+            if (p < 0){
+                p += 2 * abs(dy);
+            }
+            else{
+                p += 2 * abs(dy) - 2 * abs(dx);
+                y += 1;
+            }
+        }
+    } else {
+        p = 2 * abs(dx) - abs(dy);
+        while (y <= y2){
+            pixel(x, y, color, originX, originY, zoom);
+            y += 1;
+            if (p < 0){
+                p += 2 * abs(dx);
+            }
+            else{
+                x += 1;
+                p += 2 * abs(dx) - 2 * abs(dy);
+            }
+        }
+    }
+
+}
+
 int main()
 {
     int gd = DETECT, gm;
@@ -101,11 +138,9 @@ int main()
 
     drawCoordinateSystem(originX, originY, zoom);
 
-    // Draw a straight line from (0, 0) to (10, 10)
-    for (int i = 0; i <= 10; ++i)
-    {
-        pixel(i, i, WHITE, originX, originY, zoom);
-    }
+    // Draw a straight line from 1,1 to 8,5
+
+    bresenhamLine(1, 1, 8, 5, RED, originX, originY, zoom);
     
 
     getch();

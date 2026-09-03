@@ -84,6 +84,37 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
     outtextxy(originX + 5, originY + 5, "0");
 }
 
+void bresenhamCirlce(int centerX, int centerY, int radius, int originX, int originY, int zoom)
+{
+    int x = 0;
+    int y = radius;
+    int d = 3 - 2 * radius;
+
+    while (y >= x)
+    {
+        // Draw the eight symmetrical points
+        pixel(centerX + x, centerY + y, RED, originX, originY, zoom);
+        pixel(centerX - x, centerY + y, RED, originX, originY, zoom);
+        pixel(centerX + x, centerY - y, RED, originX, originY, zoom);
+        pixel(centerX - x, centerY - y, RED, originX, originY, zoom);
+        pixel(centerX + y, centerY + x, RED, originX, originY, zoom);
+        pixel(centerX - y, centerY + x, RED, originX, originY, zoom);
+        pixel(centerX + y, centerY - x, RED, originX, originY, zoom);
+        pixel(centerX - y, centerY - x, RED, originX, originY, zoom);
+
+        if (d < 0)
+        {
+            d = d + 4 * x + 6;
+        }
+        else
+        {
+            d = d + 4 * (x - y) + 10;
+            y--;
+        }
+        x++;
+    }
+}
+
 int main()
 {
     int gd = DETECT, gm;
@@ -95,18 +126,14 @@ int main()
     cleardevice();
 
     // Coordinate system settings
-    int originX = 100;
-    int originY = 500;
+    int originX = 400;
+    int originY = 300;
     int zoom = 25;
 
     drawCoordinateSystem(originX, originY, zoom);
 
-    // Draw a straight line from (0, 0) to (10, 10)
-    for (int i = 0; i <= 10; ++i)
-    {
-        pixel(i, i, WHITE, originX, originY, zoom);
-    }
-    
+    // Draw a Circle at (0,0) of radius 10
+    bresenhamCirlce(0, 0, 10, originX, originY, zoom);
 
     getch();
     closegraph();
