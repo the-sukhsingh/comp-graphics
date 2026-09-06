@@ -1,5 +1,6 @@
 #include <graphics.h>
 #include <iostream>
+#include "animation_ui.h"
 using namespace std;
 
 void pixel(int x, int y, int color, int originX, int originY, int zoom)
@@ -97,11 +98,14 @@ void midpointEllipse(int rx, int ry, int xc, int yc, int color, int originX, int
 
     int x = 0, y = ry;
     float p1 = ry * ry - rx * rx * ry + 0.25 * rx * rx;
+    int step = 1;
 
     // Region 1
     while (2 * ry * ry * x < 2 * rx * rx * y)
     {
         ellipsePlotPoints(xc, yc, x, y, color, originX, originY, zoom);
+        showCalculation("Midpoint ellipse R1", step++, x, y, static_cast<int>(p1));
+        showTableRow(step - 1, x, y, static_cast<int>(p1));
 
         x++;
         if (p1 < 0)
@@ -120,6 +124,8 @@ void midpointEllipse(int rx, int ry, int xc, int yc, int color, int originX, int
 
     while (y >= 0) {
         ellipsePlotPoints(xc, yc, x, y, color, originX, originY, zoom);
+        showCalculation("Midpoint ellipse R2", step++, x, y, static_cast<int>(p2));
+        showTableRow(step - 1, x, y, static_cast<int>(p2));
 
         y--;
         if (p2 > 0) {
@@ -143,14 +149,19 @@ int main()
     cleardevice();
 
     // Coordinate system settings
-    int originX = 400;
+    int originX = 270;
     int originY = 300;
     int zoom = 10;
 
     drawCoordinateSystem(originX, originY, zoom);
+    char title[] = "Midpoint Ellipse Algorithm";
+    char subtitle[] = "Two-region midpoint decisions with four-way symmetry";
+    drawUiHeader(title, subtitle);
+    drawCalculationTable("Ellipse decisions");
 
     // Draw an ellipse with rx = 8, ry = 6, centered at (0, 0)
     midpointEllipse(15, 25, 0, 0, BLUE, originX, originY, zoom);
+    showComplete("Midpoint ellipse complete");
 
     getch();
     closegraph();

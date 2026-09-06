@@ -1,5 +1,6 @@
 #include <graphics.h>
 #include <iostream>
+#include "animation_ui.h"
 using namespace std;
 
 void pixel(int x, int y, int color, int originX, int originY, int zoom)
@@ -89,6 +90,7 @@ void bresenhamCirlce(int centerX, int centerY, int radius, int originX, int orig
     int x = 0;
     int y = radius;
     int d = 3 - 2 * radius;
+    int step = 1;
 
     while (y >= x)
     {
@@ -101,6 +103,8 @@ void bresenhamCirlce(int centerX, int centerY, int radius, int originX, int orig
         pixel(centerX - y, centerY + x, RED, originX, originY, zoom);
         pixel(centerX + y, centerY - x, RED, originX, originY, zoom);
         pixel(centerX - y, centerY - x, RED, originX, originY, zoom);
+        showCalculation("Bresenham circle", step++, x, y, d);
+        showTableRow(step - 1, x, y, d);
 
         if (d < 0)
         {
@@ -126,14 +130,19 @@ int main()
     cleardevice();
 
     // Coordinate system settings
-    int originX = 400;
+    int originX = 300;
     int originY = 300;
     int zoom = 25;
 
     drawCoordinateSystem(originX, originY, zoom);
+    char title[] = "Bresenham Circle Algorithm";
+    char subtitle[] = "Eight-way symmetry with live decision parameter";
+    drawUiHeader(title, subtitle);
+    drawCalculationTable("Circle decisions");
 
     // Draw a Circle at (0,0) of radius 10
     bresenhamCirlce(0, 0, 10, originX, originY, zoom);
+    showComplete("Bresenham circle complete");
 
     getch();
     closegraph();

@@ -1,5 +1,6 @@
 #include <graphics.h>
 #include <iostream>
+#include "animation_ui.h"
 using namespace std;
 
 void pixel(int x, int y, int color, int originX, int originY, int zoom)
@@ -82,19 +83,23 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
     }
 
     // Origin label
-    outtextxy(originX + 5, originY + 5, "0");
+    char originLabel[] = "0";
+    outtextxy(originX + 5, originY + 5, originLabel);
 }
 
 void bresenhamLine(int x1, int y1, int x2, int y2, int color, int originX, int originY, int zoom){
-    float x = x1;
-    float y = y1;
-    float dx = x2 - x1;
-    float dy = y2 - y1;
-    float p;
+    int x = x1;
+    int y = y1;
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    int p;
+    int step = 1;
     if (abs(dx) > abs(dy)){
         p = 2 * abs(dy) - abs(dx);
         while (x <= x2){
             pixel(x, y, color, originX, originY, zoom);
+            showCalculation("Bresenham line", step++, x, y, p);
+            showTableRow(step - 1, x, y, p);
             x += 1;
             if (p < 0){
                 p += 2 * abs(dy);
@@ -108,6 +113,8 @@ void bresenhamLine(int x1, int y1, int x2, int y2, int color, int originX, int o
         p = 2 * abs(dx) - abs(dy);
         while (y <= y2){
             pixel(x, y, color, originX, originY, zoom);
+            showCalculation("Bresenham line", step++, x, y, p);
+            showTableRow(step - 1, x, y, p);
             y += 1;
             if (p < 0){
                 p += 2 * abs(dx);
@@ -137,11 +144,15 @@ int main()
     int zoom = 25;
 
     drawCoordinateSystem(originX, originY, zoom);
+    char title[] = "Bresenham Line Algorithm";
+    char subtitle[] = "Incremental rasterization with live decision parameter";
+    drawUiHeader(title, subtitle);
+    drawCalculationTable("Decision table");
 
     // Draw a straight line from 1,1 to 8,5
 
     bresenhamLine(1, 1, 8, 5, RED, originX, originY, zoom);
-    
+    showComplete("Bresenham line complete");
 
     getch();
     closegraph();

@@ -1,5 +1,6 @@
 #include <graphics.h>
 #include <iostream>
+#include "animation_ui.h"
 using namespace std;
 
 void pixel(int x, int y, int color, int originX, int originY, int zoom)
@@ -7,6 +8,7 @@ void pixel(int x, int y, int color, int originX, int originY, int zoom)
     int screenX = originX + x * zoom;
     int screenY = originY - y * zoom;
 
+    setfillstyle(SOLID_FILL, color);
     bar(
         screenX - zoom/2,
         screenY - zoom/2,
@@ -112,6 +114,8 @@ void dda(int x1, int y1, int x2, int y2, int originX, int originY, int zoom)
     for (int i = 0; i <= steps; i++)
     {
         pixel(round(x), round(y), WHITE, originX, originY, zoom);
+        showCalculation("DDA line", i + 1, round(x), round(y), steps);
+        showTableRow(i + 1, round(x), round(y), steps);
         x += xIncrement;
         y += yIncrement;
     }
@@ -134,6 +138,10 @@ int main()
 
     // Draw Coordinate System
     drawCoordinateSystem(originX, originY, zoom);
+    char title[] = "DDA Line Algorithm";
+    char subtitle[] = "Step-by-step interpolation with rounded pixels";
+    drawUiHeader(title, subtitle);
+    drawCalculationTable("Interpolation table");
 
     // DDA
     int x1 = 2;
@@ -142,6 +150,7 @@ int main()
     int y2 = 5;
 
     dda(x1, y1, x2, y2, originX, originY, zoom);
+    showComplete("DDA line complete");
 
     getch();
     closegraph();

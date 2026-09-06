@@ -1,5 +1,6 @@
 #include <graphics.h>
 #include <iostream>
+#include "animation_ui.h"
 using namespace std;
 
 void pixel(int x, int y, int color, int originX, int originY, int zoom)
@@ -100,13 +101,19 @@ int main()
     int zoom = 25;
 
     drawCoordinateSystem(originX, originY, zoom);
+    char title[] = "Pixel Plotting Demo";
+    char subtitle[] = "Animated coordinate-to-pixel mapping";
+    drawUiHeader(title, subtitle);
+    drawCalculationTable("Pixel coordinates");
 
     // Draw a straight line from (0, 0) to (10, 10)
     for (int i = 0; i <= 10; ++i)
     {
         pixel(i, i, WHITE, originX, originY, zoom);
+        showCalculation("Pixel plotting", i + 1, i, i, zoom);
+        showTableRow(i + 1, i, i, zoom);
     }
-    
+    showComplete("Pixel plotting complete");
 
     getch();
     closegraph();

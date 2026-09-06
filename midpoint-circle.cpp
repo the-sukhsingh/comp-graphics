@@ -1,5 +1,6 @@
 #include <graphics.h>
 #include <iostream>
+#include "animation_ui.h"
 using namespace std;
 
 void pixel(int x, int y, int color, int originX, int originY, int zoom)
@@ -89,6 +90,7 @@ void midpointCircle(int centerX, int centerY, int radius, int color, int originX
     int x = 0;
     int y = radius;
     int p = 1 - radius;
+    int step = 1;
 
     while (x <= y)
     {
@@ -101,6 +103,8 @@ void midpointCircle(int centerX, int centerY, int radius, int color, int originX
         pixel(centerX - y, centerY - x, color, originX, originY, zoom);
         pixel(centerX + y, centerY - x, color, originX, originY, zoom);
         pixel(centerX + x, centerY - y, color, originX, originY, zoom);
+        showCalculation("Midpoint circle", step++, x, y, p);
+        showTableRow(step - 1, x, y, p);
 
         x++;
 
@@ -127,14 +131,19 @@ int main()
     cleardevice();
 
     // Coordinate system settings
-    int originX = 400;
+    int originX = 300;
     int originY = 300;
     int zoom = 25;
 
     drawCoordinateSystem(originX, originY, zoom);
+    char title[] = "Midpoint Circle Algorithm";
+    char subtitle[] = "Midpoint selection across eight symmetric octants";
+    drawUiHeader(title, subtitle);
+    drawCalculationTable("Circle decisions");
 
     // Draw a Circle at (0,0) of radius 10
     midpointCircle(0, 0, 10, BLUE, originX, originY, zoom);
+    showComplete("Midpoint circle complete");
     
 
     getch();
