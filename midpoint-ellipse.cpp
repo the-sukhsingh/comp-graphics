@@ -8,10 +8,10 @@ void pixel(int x, int y, int color, int originX, int originY, int zoom)
     int screenY = originY - y * zoom;
     setfillstyle(SOLID_FILL, color);
     bar(
-        screenX - zoom/2,
-        screenY - zoom/2,
-        screenX + zoom/2 - 1,
-        screenY + zoom/2 + 1);
+        screenX - zoom / 2,
+        screenY - zoom / 2,
+        screenX + zoom / 2 - 1,
+        screenY + zoom / 2 + 1);
 }
 
 void drawCoordinateSystem(int originX, int originY, int zoom)
@@ -32,9 +32,9 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
              screenX, originY + 3);
 
         char text[10];
-        sprintf(text, "%d", x);
+        // sprintf(text, "%d", x);
 
-        outtextxy(screenX + 2, originY + 5, text);
+        // outtextxy(screenX + 2, originY + 5, text);
     }
 
     // Negative X-axis
@@ -46,9 +46,9 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
              screenX, originY + 3);
 
         char text[10];
-        sprintf(text, "%d", x);
+        // sprintf(text, "%d", x);
 
-        outtextxy(screenX - 8, originY + 5, text);
+        // outtextxy(screenX - 8, originY + 5, text);
     }
 
     // Y-axis numbering
@@ -61,9 +61,9 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
              originX + 3, screenY);
 
         char text[10];
-        sprintf(text, "%d", y);
+        // sprintf(text, "%d", y);
 
-        outtextxy(originX - 20, screenY - 5, text);
+        // outtextxy(originX - 20, screenY - 5, text);
     }
 
     // Negative Y-axis
@@ -75,45 +75,61 @@ void drawCoordinateSystem(int originX, int originY, int zoom)
              originX + 3, screenY);
 
         char text[10];
-        sprintf(text, "%d", y);
+        // sprintf(text, "%d", y);
 
-        outtextxy(originX - 25, screenY - 5, text);
+        // outtextxy(originX - 25, screenY - 5, text);
     }
 
     // Origin label
     outtextxy(originX + 5, originY + 5, "0");
 }
 
-void midpointCircle(int centerX, int centerY, int radius, int color, int originX, int originY, int zoom)
+void ellipsePlotPoints(int xc, int yc, int x, int y, int color, int originX, int originY, int zoom)
 {
-    int x = 0;
-    int y = radius;
-    int p = 1 - radius;
+    pixel(xc + x, yc + y, color, originX, originY, zoom);
+    pixel(xc - x, yc + y, color, originX, originY, zoom);
+    pixel(xc + x, yc - y, color, originX, originY, zoom);
+    pixel(xc - x, yc - y, color, originX, originY, zoom);
+}
 
-    while (x <= y)
+void midpointEllipse(int rx, int ry, int xc, int yc, int color, int originX, int originY, int zoom)
+{
+
+    int x = 0, y = ry;
+    float p1 = ry * ry - rx * rx * ry + 0.25 * rx * rx;
+
+    // Region 1
+    while (2 * ry * ry * x < 2 * rx * rx * y)
     {
-        // Draw the eight octants
-        pixel(centerX + x, centerY + y, color, originX, originY, zoom);
-        pixel(centerX + y, centerY + x, color, originX, originY, zoom);
-        pixel(centerX - y, centerY + x, color, originX, originY, zoom);
-        pixel(centerX - x, centerY + y, color, originX, originY, zoom);
-        pixel(centerX - x, centerY - y, color, originX, originY, zoom);
-        pixel(centerX - y, centerY - x, color, originX, originY, zoom);
-        pixel(centerX + y, centerY - x, color, originX, originY, zoom);
-        pixel(centerX + x, centerY - y, color, originX, originY, zoom);
+        ellipsePlotPoints(xc, yc, x, y, color, originX, originY, zoom);
 
         x++;
-
-        if (p <= 0)
+        if (p1 < 0)
         {
-            p = p + 2 * x + 1;
+            p1 += 2 * ry * ry * x + ry * ry;
         }
         else
         {
             y--;
-            p = p + 2 * x - 2 * y + 1;
+            p1 += 2 * ry * ry * x - 2 * rx * rx * y + ry * ry;
         }
     }
+
+    // Region 2
+    float p2 = ry * ry * (x + 0.5) * (x + 0.5) + rx * rx * (y - 1) * (y - 1) - rx * rx * ry * ry;
+
+    while (y >= 0) {
+        ellipsePlotPoints(xc, yc, x, y, color, originX, originY, zoom);
+
+        y--;
+        if (p2 > 0) {
+            p2 += -2 * rx * rx * y + rx * rx;
+        } else {
+            x++;
+            p2 += 2 * ry * ry * x - 2 * rx * rx * y + rx * rx;
+        }
+    }
+
 }
 
 int main()
@@ -129,13 +145,12 @@ int main()
     // Coordinate system settings
     int originX = 400;
     int originY = 300;
-    int zoom = 25;
+    int zoom = 10;
 
     drawCoordinateSystem(originX, originY, zoom);
 
-    // Draw a Circle at (0,0) of radius 10
-    midpointCircle(0, 0, 10, BLUE, originX, originY, zoom);
-    
+    // Draw an ellipse with rx = 8, ry = 6, centered at (0, 0)
+    midpointEllipse(15, 25, 0, 0, BLUE, originX, originY, zoom);
 
     getch();
     closegraph();
